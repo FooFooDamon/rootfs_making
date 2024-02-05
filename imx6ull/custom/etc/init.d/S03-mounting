@@ -1,0 +1,58 @@
+#!/bin/sh
+
+# SPDX-License-Identifier: GPL-2.0
+
+#
+# A demo script that manages the custom disk partition.
+#
+# Copyright (c) 2024 Man Hung-Coeng <udc577@126.com>
+#
+
+#
+# Modify parameters below according to your need.
+#
+
+start()
+{
+    local mtd_num=$(cat /proc/mtd | grep -i 'custom\|opt' | awk -F : '{ print $1 }' | sed 's/[^0-9]*//g')
+
+    if [ -n "${mtd_num}" ]; then
+        echo "Mounting /opt ..."
+        ubiattach /dev/ubi_ctrl -m ${mtd_num} -d 1 && mount -t ubifs ubi1_0 /opt || return 1
+        echo "Mounted /opt successfully."
+    fi
+}
+
+stop()
+{
+    local mtd_part=$(cat /proc/mtd | grep -i 'custom\|opt' | awk -F : '{ print $1 }')
+
+    if [ -n "${mtd_part}" ]; then
+        echo "Unmounting /opt ... "
+        umount -l /opt && ubidetach -p /dev/${mtd_part} || return 1
+        echo "Unmounted /opt successfully."
+    fi
+}
+
+restart()
+{
+    stop && start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?
+

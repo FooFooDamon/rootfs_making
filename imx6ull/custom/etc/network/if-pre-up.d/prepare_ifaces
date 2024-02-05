@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# SPDX-License-Identifier: GPL-2.0
+
+#
+# A demo script that prepares network interfaces.
+#
+# Copyright (c) 2024 Man Hung-Coeng <udc577@126.com>
+#
+
+#
+# Modify parameters below according to your need.
+#
+
+for i in 0 1
+do
+    ip link set can${i} type can bitrate 1000000 restart-ms 1000
+    ip link set can${i} up # TODO: Delete this line in future.
+    ip link set can${i} txqueuelen 256
+done
+
+if [ -z "$(ifconfig eth0 | grep 'inet addr:' | sed 's/.*inet addr:\([0-9.]\+\).*/\1/')" ]; then
+    set -x
+    ifconfig eth0 192.168.111.111 netmask 255.255.255.0
+    set +x
+fi
+

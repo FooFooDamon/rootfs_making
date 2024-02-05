@@ -1,0 +1,64 @@
+#!/bin/sh
+
+# SPDX-License-Identifier: GPL-2.0
+
+#
+# Fix the SSH privilege separation error.
+#
+# Copyright (c) 2024 Man Hung-Coeng <udc577@126.com>
+#
+
+start()
+{
+    local gid=$(grep "^sshd:" /etc/group | awk -F : '{ print $3 }')
+    local uid=$(grep "^sshd:" /etc/passwd | awk -F : '{ print $3 }')
+
+    if [ -z "${gid}" ]; then
+        gid=$(awk -F : '{ print $3 }' /etc/group | sort -n | tail -n 1)
+        gid=$((${gid} + 1))
+        echo "sshd:x:${gid}:" | tee -a /etc/group
+    fi
+
+    if [ -z "${uid}" ]; then
+        uid=$(awk -F : '{ print $3 }' /etc/passwd | sort -n | tail -n 1)
+        uid=$((${uid} + 1))
+        echo "sshd:x:${uid}:${gid}:SSH drop priv user:/:/bin/false" | tee -a /etc/passwd
+    fi
+
+    [ $(grep -c "^sshd:" /etc/shadow) -gt 0 ] || (echo "sshd:*:::::::" | tee -a /etc/shadow)
+
+    [ -d /var/empty ] || mkdir /var/empty
+
+    [ $(grep -c "^#\?[[:space:]]*PermitRootLogin" /etc/ssh/sshd_config) -eq 0 ] \
+        || sed -i "/^#\?[ \t]*\(PermitRootLogin[ \t]\).*/s//\1yes/g" /etc/ssh/sshd_config
+
+    /usr/bin/ssh-keygen -A
+}
+
+stop()
+{
+    :
+}
+
+restart()
+{
+    stop && start
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?
+

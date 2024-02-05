@@ -1,0 +1,20 @@
+--- a/libbb/unicode.c	2023-05-14 00:12:44.777772464 +0800
++++ b/libbb/unicode.c	2023-05-14 10:30:46.613342855 +0800
+@@ -1027,7 +1027,7 @@
+ 					while ((int)--width >= 0);
+ 					break;
+ 				}
+-				*d++ = (c >= ' ' && c < 0x7f) ? c : '?';
++				*d++ = (c >= ' '/* && c < 0x7f*/) ? c : '?';
+ 				src++;
+ 			}
+ 			*d = '\0';
+@@ -1035,7 +1035,7 @@
+ 			d = dst = xstrndup(src, width);
+ 			while (*d) {
+ 				unsigned char c = *d;
+-				if (c < ' ' || c >= 0x7f)
++				if (c < ' '/* || c >= 0x7f*/)
+ 					*d = '?';
+ 				d++;
+ 			}
