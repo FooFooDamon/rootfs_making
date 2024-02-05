@@ -41,7 +41,6 @@ _tmp_
 *.dat
 *.bk
 *.bak
-bin/
 obj/
 buildroot-*.tar.bz2
 buildroot-*.tar.bz2.sign
@@ -49,4 +48,8 @@ buildroot-*.tar.gz
 buildroot-*.tar.gz.sign
 buildroot-*.tar.xz
 buildroot-*.tar.xz.sign
+
+!if-pre-up.d
+!init.d
+!profile.d
 
