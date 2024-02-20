@@ -13,7 +13,7 @@ LAZY_CODING_URL ?= https://github.com/FooFooDamon/lazy_coding_skills
 .PHONY: all help init
 
 all help init:
-	@for i in __ver__.mk u-boot.mk; \
+	@for i in __ver__.mk buildroot.mk; \
 	do \
 		[ -s $${i} ] || wget -c "${LAZY_CODING_URL}/raw/main/makefile/$${i}"; \
 	done
