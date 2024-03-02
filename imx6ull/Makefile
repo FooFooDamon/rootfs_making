@@ -27,9 +27,9 @@ include __ver__.mk
 PKG_VERSION ?= 2023.02
 SRC_PARENT_DIR ?= ${HOME}/src
 INSTALL_DIR ?= ${HOME}/tftpd/imx6ullevk
-BUSYBOX_CONFIG := package/busybox/busybox.config
-CUSTOM_DIR ?= custom
-CUSTOM_FILES ?= ${BUSYBOX_CONFIG} \
+OVERLAY_DIR ?= custom
+EXT_TARGETS +=
+CUSTOM_FILES += \
     package/busybox/0005-libbb-printable_string2.patch \
     package/busybox/0006-libbb-unicode_conv_to_printable2.patch
 
