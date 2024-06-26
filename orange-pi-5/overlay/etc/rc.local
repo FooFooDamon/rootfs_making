@@ -15,8 +15,18 @@
 echo 6 > /proc/sys/kernel/printk
 
 # Buzzer initialization.
-gpio mode 10 out
-gpio write 10 0
+#gpio mode 10 out
+#gpio write 10 0
+
+#for i in _rkcif _rkisp buf2_common buf2_v4l2
+#do
+#    echo 1 > /sys/module/video${i}/parameters/debug
+#done
+
+#for i in $(seq 0 19)
+#do
+#    echo 0x03 > /sys/class/video4linux/video${i}/dev_debug
+#done
 
 exit 0
 
