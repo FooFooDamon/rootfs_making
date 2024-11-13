@@ -14,9 +14,7 @@
 #echo 6 | sudo tee /proc/sys/kernel/printk
 echo 6 > /proc/sys/kernel/printk
 
-systemctl stop ntp
-ntpd -gq
-systemctl start ntp
+(systemctl stop ntp; ntpd -gq; systemctl start ntp) &
 
 # Buzzer initialization.
 #gpio mode 10 out
